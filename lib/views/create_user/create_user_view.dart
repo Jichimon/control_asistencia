@@ -23,13 +23,13 @@ class CreateUserFormState extends State<CreateUserForm> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              nameInput(),
-              phoneNumberInput(),
-              imagesInput();
+              //nameInput(),
+              //phoneNumberInput(),
+              //imagesInput();
               Padding(
                 padding: const
                   EdgeInsets.symmetric(vertical: 16.0),
-                  child: submitButton(),
+                  //child: submitButton(),
               ),
             ],
           )
