@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:control_asistencia/controllers/user_controller.dart';
 
 class CreateUserForm extends StatefulWidget {
 
@@ -11,8 +12,7 @@ class CreateUserForm extends StatefulWidget {
 class CreateUserFormState extends State<CreateUserForm> {
 
   final _formKey = GlobalKey<FormState>();
-  String nameFromForm;
-  String phoneNumberFromForm;
+  final userController = UserController();
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +23,13 @@ class CreateUserFormState extends State<CreateUserForm> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              //nameInput(),
-              //phoneNumberInput(),
-              //imagesInput();
+              userController.nameInput(),
+              userController.phoneNumberInput(),
+              userController.imagesInput(),
               Padding(
                 padding: const
                   EdgeInsets.symmetric(vertical: 16.0),
-                  //child: submitButton(),
+                  child: userController.createUserButton(),
               ),
             ],
           )

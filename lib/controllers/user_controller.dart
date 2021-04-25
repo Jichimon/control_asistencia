@@ -1,4 +1,25 @@
+import 'package:flutter/material.dart';
 
-class userController {
+class UserController {
 
+  String nameFromForm;
+  String phoneNumberFromForm;
+
+
+
+  Widget nameInput(){
+
+  }
+
+  Widget phoneNumberInput() {
+
+  }
+
+  Widget imagesInput() {
+
+  }
+
+  Widget createUserButton() {
+
+  }
 }
