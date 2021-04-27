@@ -17,14 +17,14 @@ class DBProvider {
   //SQL_Methods
   static final String createTable_User =
       "CREATE TABLE IF NOT EXISTS users("
-      "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+      "id INTEGER PRIMARY KEY,"
       "name TEXT NOT NULL,"
-      "phoneNumber INTEGER"
+      "phoneNumber TEXT"
       ");";
 
   static final String createTable_Marcaje =
     "CREATE TABLE IF NOT EXISTS marcaje("
-      "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+      "id INTEGER PRIMARY KEY,"
       "date TEXT NOT NULL,"
       "userId INTEGER NOT NULL,"
       "FOREIGN KEY(userId) REFERENCES users(id)"
@@ -60,7 +60,7 @@ class DBProvider {
 
   //_______CRUD Methods______________________
   //user
-  Future<void> insertUser(User newUser) async{
+  Future<int> insertUser(User newUser) async{
     final Database db = await database;
     var res = await db.insert(
         "users",

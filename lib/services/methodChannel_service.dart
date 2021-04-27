@@ -1,9 +1,12 @@
 import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
-import 'package:flutter/services.dart';
 
 class MethodChannelService {
+
+  //Singleton Pattern para el constructor
+  MethodChannelService();
+  static final MethodChannelService channel = MethodChannelService();
 
   static const platform = const MethodChannel('control_asistencia/flutter/canalDeDatos');
 

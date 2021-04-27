@@ -1,8 +1,8 @@
 
 class User {
-  final int id;
+  int id;
   final String name;
-  final int phoneNumber;
+  final String phoneNumber;
 
   User({this.id, this.name, this.phoneNumber});
 

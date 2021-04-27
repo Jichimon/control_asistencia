@@ -1,3 +1,4 @@
+import 'package:control_asistencia/views/create_user/create_user_view.dart';
 import 'package:flutter/material.dart';
 import 'package:control_asistencia/views/camera_page/camera_view.dart';
 
@@ -38,7 +39,7 @@ class MenuDrawer extends StatelessWidget {
       home: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
-          children: const <Widget>[
+          children: <Widget>[
             DrawerHeader(
               decoration: BoxDecoration(
                 color: Colors.blue,
@@ -54,6 +55,7 @@ class MenuDrawer extends StatelessWidget {
             ListTile(
               leading: Icon(Icons.person_add),
               title: Text('Crear Usuario'),
+              onTap: navigateTo(context, CreateUserForm()),
             ),
             ListTile(
               leading: Icon(Icons.person_remove),
@@ -65,12 +67,24 @@ class MenuDrawer extends StatelessWidget {
             ),
             ListTile(
               leading: Icon(Icons.exit_to_app_outlined),
-              title: Text('Salir')
+              title: Text('Salir'),
+              onTap: salir()
             ),
           ],
         ),
       ),
     );
+  }
+
+  void Function() navigateTo(BuildContext context, Widget route) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => route)
+    );
+  }
+
+  void Function() salir() {
+
   }
 }
 
