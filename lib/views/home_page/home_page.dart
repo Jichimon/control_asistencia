@@ -25,29 +25,26 @@ class _HomePageState extends State<HomePage> {
           title: const Text('Access Control'),
         ),
         body: Camera(),
-        drawer: MenuDrawer(),
+        drawer: menuDrawer(),
+        onDrawerChanged: (value){ CameraState.isStreamming = value; },
+
       ),
     );
   }
-}
 
-class MenuDrawer extends StatelessWidget {
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Drawer(
+  Widget menuDrawer() {
+    return Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.blue,
+                color: Colors.black38,
               ),
               child: Text(
-                'Drawer Header',
+                'Menu',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.white70,
                   fontSize: 24,
                 ),
               ),
@@ -55,7 +52,7 @@ class MenuDrawer extends StatelessWidget {
             ListTile(
               leading: Icon(Icons.person_add),
               title: Text('Crear Usuario'),
-              onTap: navigateTo(context, CreateUserForm()),
+              onTap: () => navigateTo(context, CreateUserForm()),
             ),
             ListTile(
               leading: Icon(Icons.person_remove),
@@ -67,23 +64,21 @@ class MenuDrawer extends StatelessWidget {
             ),
             ListTile(
               leading: Icon(Icons.exit_to_app_outlined),
-              title: Text('Salir'),
-              onTap: salir()
+              title: Text('Salir del menu'),
+              onTap: () => Navigator.pop(context),
             ),
           ],
         ),
-      ),
     );
   }
 
-  void Function() navigateTo(BuildContext context, Widget route) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => route)
-    );
-  }
-
-  void Function() salir() {
+  void navigateTo(BuildContext context, Widget route) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Navigator.push(
+          context,
+          MaterialPageRoute( builder: (context) => route, )
+      );
+    });
 
   }
 }

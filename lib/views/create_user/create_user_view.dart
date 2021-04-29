@@ -1,3 +1,5 @@
+
+import 'package:control_asistencia/views/create_user/image_handler_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:control_asistencia/controllers/user_controller.dart';
 
@@ -13,29 +15,41 @@ class CreateUserFormState extends State<CreateUserForm> {
 
   final _formKey = GlobalKey<FormState>();
   final userController = UserController();
+  final imageHandlerWidget = ImageHandlerWidget();
 
   TextEditingController nameCtrl = new TextEditingController();
   TextEditingController phoneNumberCtrl = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child:
-        Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              nameInput(),
-              phoneNumberInput(),
-              imagesInput(),
-              Padding(
-                padding: const
-                  EdgeInsets.symmetric(vertical: 16.0),
-                  child: createUserButton(),
-              ),
-            ],
-          )
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text('Create New User'),
+          automaticallyImplyLeading: false,
+          leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+        ),
+        body: Center(
+          child:
+            Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    nameInput(),
+                    phoneNumberInput(),
+                    imagesInput(),
+                    Padding(
+                      padding: const
+                        EdgeInsets.symmetric(vertical: 16.0),
+                        child: createUserButton(),
+                    ),
+                  ],
+                )
+            )
         )
     );
   }
@@ -65,7 +79,7 @@ class CreateUserFormState extends State<CreateUserForm> {
   }
 
   Widget imagesInput() {
-
+    return imageHandlerWidget;
   }
 
   Widget createUserButton() {
@@ -74,18 +88,20 @@ class CreateUserFormState extends State<CreateUserForm> {
           //si el form es válido, devolverá true
           if (_formKey.currentState.validate()) {
             //aca llamamos al userController para meter el nuevo usuario a la base de datos
-            userController.inputNewUser(nameCtrl.text, phoneNumberCtrl.text);
+            userController.currentState = UserController.STATE_IN_PROCESS;
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar( content: Text(userController.currentState),));
             return FutureBuilder<void>(
-              future: userController.createNewUser(),
+              future: userController.createNewUser(nameCtrl.text, phoneNumberCtrl.text, ImageHandlerWidgetState.images),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   //cuando acabe el metodo Future
+                  _formKey.currentState.reset();
+                  ImageHandlerWidgetState.images = [];
                   return SnackBar(content: Text(userController.currentState));
                 } else {
                   //mientras el metodo future está en proceso
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(SnackBar( content: Text(userController.currentState),));
-                  return Center(child: CircularProgressIndicator());
+                  return SnackBar( content: Text(userController.currentState));
                 }
               },
             );
@@ -127,6 +143,10 @@ class CreateUserFormState extends State<CreateUserForm> {
       return "Solo se aceptan numeros en este campo";
     }
     return null;
+  }
+
+  void deleteAll() {
+
   }
 
 }

@@ -7,17 +7,20 @@ import 'package:flutter/material.dart';
 class Camera extends StatefulWidget {
 
   @override
-  _CameraState createState() {
-    return _CameraState();
+  CameraState createState() {
+    return CameraState();
   }
 }
 
-class _CameraState extends State<Camera> {
+class CameraState extends State<Camera> {
+
+  static bool isStreamming = true;
 
   CameraController controller;
   Future<void> initializeControllerFuture;
   List<CameraDescription> cameras;
   int selectedCameraIndex;
+
 
 
   Future initCamera(CameraDescription cameraDescription) async{
@@ -71,7 +74,7 @@ class _CameraState extends State<Camera> {
 
   void streaming(){
     controller.startImageStream((image) => {
-      debugPrint("streaming + image planes:" + image.planes.length.toString())
+      //debugPrint("streaming + image planes:" + image.planes.length.toString())
     });
   }
 
@@ -106,12 +109,16 @@ class _CameraState extends State<Camera> {
     return Container(child: cameraPreview());
   }
 
+
   @override
-  void dispose() {
+  Future<void> dispose() async{
     // Dispose of the controller when the widget is disposed.
-    controller.dispose();
-    controller.stopImageStream();
+    Future.delayed(Duration.zero, () async {
+      //await controller.stopImageStream();
+      await controller.dispose();
+    });
     super.dispose();
   }
+
 
 }

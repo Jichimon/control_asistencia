@@ -10,10 +10,14 @@ import 'package:image_picker/image_picker.dart';
 
 class ImageHandler {
 
-  List<File> images = [];
   final ImagePicker imagePicker = ImagePicker();
 
-  Future getImage(bool fromGallery) async {
+  //Singleton Pattern para el constructor
+  ImageHandler();
+  static final ImageHandler im = ImageHandler();
+
+
+  Future<Uint8List> getImage(bool fromGallery) async {
     PickedFile pickedFile;
     if (fromGallery) {
       pickedFile = await imagePicker.getImage(source: ImageSource.gallery);
@@ -22,12 +26,20 @@ class ImageHandler {
     else {
       pickedFile = await imagePicker.getImage(source: ImageSource.camera, preferredCameraDevice: CameraDevice.front);
     }
+
+    return await pickedFile.readAsBytes();
   }
 
   Uint8List firstPlane (CameraImage image) {
     return image.planes.first.bytes;
   }
 
-
+  List<Uint8List> convertFilesToUint8List( List<File> imageFiles) {
+    List<Uint8List> bytesPerImage;
+    for (File photo in imageFiles) {
+      bytesPerImage.add(photo.readAsBytesSync());
+    }
+    return bytesPerImage;
+  }
 
 }

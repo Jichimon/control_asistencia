@@ -1,3 +1,4 @@
+import 'package:control_asistencia/views/create_user/create_user_view.dart';
 import 'package:control_asistencia/views/home_page/home_page.dart';
 import 'package:flutter/material.dart';
 
@@ -24,7 +25,11 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: HomePage(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => HomePage(),
+        '/createUser': (context) => CreateUserForm(),
+      },
     );
   }
 }
