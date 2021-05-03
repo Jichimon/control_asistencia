@@ -36,20 +36,22 @@ class CreateUserFormState extends State<CreateUserForm> {
           child:
             Form(
                 key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    nameInput(),
-                    phoneNumberInput(),
-                    imagesInput(),
-                    Padding(
-                      padding: const
-                        EdgeInsets.symmetric(vertical: 16.0),
-                        child: createUserButton(),
+                child: Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        nameInput(),
+                        phoneNumberInput(),
+                        imagesInput(),
+                        Padding(
+                          padding: const
+                          EdgeInsets.symmetric(vertical: 16.0),
+                          child: createUserButton(),
                     ),
                   ],
                 )
             )
+          )
         )
     );
   }
