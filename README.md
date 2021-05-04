@@ -1,6 +1,6 @@
 # control_asistencia
 
-aplicacion flutter de reconocimiento facial
+aplicacion flutter de reconocimiento facial que trabaja en la parte nativa con Luxand_SDK
 
 ## Getting Started
 
