@@ -11,7 +11,7 @@ class MethodChannelService {
   static const platform = const MethodChannel('control_asistencia/flutter/canalDeDatos');
 
 
-  Future<void> sendImageToNativeSDK(Uint8List image) async {
+  Future<int> sendImageToNativeSDK(Uint8List image) async {
     try {
       return platform.invokeMethod('setImageToIdentify', [image]);
     } on PlatformException catch (e) {

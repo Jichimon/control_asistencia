@@ -6,7 +6,7 @@ import io.flutter.plugin.common.MethodChannel;
 public class MethodChannelService extends MethodChannel {
 
     private static final String CHANNEL = "control_asistencia/flutter/canalDeDatos";
-    private MethodCallHandlerService callHandler;
+    private final MethodCallHandlerService callHandler = new MethodCallHandlerService();
 
 
     public MethodChannelService(BinaryMessenger messenger) {

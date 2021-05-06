@@ -7,7 +7,7 @@ import 'package:control_asistencia/services/image_handler.dart';
 
 class UserController {
 
-  static const String STATE_CREATED_SUCCESFUL = "User Created Succesfully";
+  static const String STATE_CREATED_SUCCESSFUL = "User Created Successfully";
   static const String STATE_IN_PROCESS = "Processing Data";
   static const String STATE_CREATION_FAILED = "User not created";
 
@@ -27,7 +27,7 @@ class UserController {
     if (res != 0) { //si se crea correctamente res = id del usuario creado
       //enviando la info del user al SDK
       await MethodChannelService.channel.sendUserArgumentsToNativeSDK(res, imagesFromForm);
-      this.currentState = UserController.STATE_CREATED_SUCCESFUL;
+      this.currentState = UserController.STATE_CREATED_SUCCESSFUL;
     } else {
       this.currentState = UserController.STATE_CREATION_FAILED;
     }

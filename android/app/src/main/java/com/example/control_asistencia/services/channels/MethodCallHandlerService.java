@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import com.example.control_asistencia.controllers.MainController;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -39,15 +40,16 @@ public class MethodCallHandlerService implements MethodCallHandler {
                     if (response == 0) {
                         result.success(response);
                     }
+                    result.error("code: " + response, "no se creo el usuario correctamente", "");
                 }
+                result.error("No data sended", "empty arguments", "");
                 break;
 
             case "onInit":
                 response = controller.onInit();
-                if (response != 0) {
-                    if (response == -3) {
-                        result.error("DATABASE_CALL_ERROR", "No se cargaron las templates","");
-                    }
+                if (response == MainController.DATABASE_CALL_ERROR) {
+                    result.error("DATABASE_CALL_ERROR", "No se cargaron las templates","");
+                } else if (response == MainController.LICENSE_ERROR) {
                     result.error("NO_LICENCE", "No license activated","");
                 }
                 result.success(response);

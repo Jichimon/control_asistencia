@@ -1,7 +1,7 @@
 package com.example.control_asistencia.services;
 
-import android.app.IntentService;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -22,16 +22,16 @@ public class DatabaseConnectionService extends SQLiteOpenHelper {
             "template BLOB NOT NULL" +
             ")";
     private static DatabaseConnectionService connection;
-    private SQLiteDatabase db;
+    private static SQLiteDatabase db;
 
     //constructor
-    private DatabaseConnectionService() {
-        super( null ,DB_NAME, null, DB_VERSION);
+    private DatabaseConnectionService(Context context) {
+        super( context ,DB_NAME, null, DB_VERSION);
     }
 
-    public static DatabaseConnectionService getInstance() {
+    public static DatabaseConnectionService getInstance(Context context) {
         if (connection == null) {
-            connection = new DatabaseConnectionService();
+            connection = new DatabaseConnectionService(context);
         }
         return connection;
     }
@@ -50,13 +50,14 @@ public class DatabaseConnectionService extends SQLiteOpenHelper {
     }
 
     public synchronized long insertFaceToDB(Face face) {
-        ContentValues cv = new ContentValues();
-        cv.put("userId", face.getUserId());
-        cv.put("template", face.getTemplate());
-        if (db == null) {
+        long res = -1;
+        if (db.isOpen()) {
             db = connection.getWritableDatabase();
+            ContentValues cv = new ContentValues();
+            cv.put("userId", face.getUserId());
+            cv.put("template", face.getTemplate());
+            res = db.insert(USERFACE_TABLE, null, cv);
         }
-        long res = db.insert(USERFACE_TABLE, null, cv);
         return res;
     }
 
@@ -76,7 +77,6 @@ public class DatabaseConnectionService extends SQLiteOpenHelper {
             } while (c.moveToNext());
         }
         c.close();
-        db.close();
         return list;
     }
 

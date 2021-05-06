@@ -15,7 +15,9 @@ public class MainController {
     public static final int CREATE_USER_ERROR = -1;
     public static final int LICENSE_ERROR = -2;
     public static final int DATABASE_CALL_ERROR = -3;
+    public static final int NO_FACE_IN_DATABASE = -4;
     public static final int MATCHING_FACES_NO_RESULT = -1;
+    public static final int NO_FACE_IN_THE_IMAGE = -10;
 
     //Luxand_Licence_Free_Trial to 21/05/2021
     private static final String FREE_TRIAL_LICENSE = "fvTNKVHUnK5qwgJpGYh0ofv4ENmT0pVZc1ugdH6UdpD3TviITcWzt6t64/QlBHFfMYZWLqWHazh0uIiMsZ92tvPTWb0cRJANm9z37jg7nrhrC/7H4oFUUlz62WLZo7qWjA7rW4GSCSaoO7/74mziq1T0E0q8ENAOfuumQC9wpnY=";
@@ -23,7 +25,7 @@ public class MainController {
     //properties
     private ArrayList<Face> allFaces;
     private final ImageHandlerService imageHandler = ImageHandlerService.getInstance();
-    private final DatabaseConnectionService db = DatabaseConnectionService.getInstance();
+    private final DatabaseConnectionService db = DatabaseConnectionService.getInstance(null);
 
 
     //constructor
@@ -42,8 +44,10 @@ public class MainController {
         } else {
             FSDK.Initialize();
             setAllFaces();
-            if (allFaces.isEmpty()) {
+            if (allFaces == null) {
                 return DATABASE_CALL_ERROR;
+            } else if (allFaces.isEmpty()) {
+                return NO_FACE_IN_DATABASE;
             }
             return SUCCESSFULLY_COMPLETED;
         }
@@ -53,7 +57,15 @@ public class MainController {
         db.openWritable();
         for (byte[] eachImageData : images) {
 
-            FSDK.FSDK_FaceTemplate faceTemplate = getFaceTemplateFromRawData(eachImageData);
+            //HImage es la estructura de datos para imagenes con la que trabaja FaceSDK
+            FSDK.HImage image = imageHandler.convertBytesBufferToHImage(eachImageData);
+
+            FSDK.TFacePosition facePosition = detectFaceInHImage(image);
+            if (facePosition == null) {
+                return NO_FACE_IN_THE_IMAGE;
+            }
+
+            FSDK.FSDK_FaceTemplate faceTemplate = getFaceTemplate(image, facePosition);
             if (faceTemplate == null) {
                 return CREATE_USER_ERROR;
             }
@@ -65,13 +77,25 @@ public class MainController {
                 return CREATE_USER_ERROR;
             }
         }
-        db.close();
         return SUCCESSFULLY_COMPLETED;
     }
     
     public int setImagesToIdentify(byte[] imageData) {
 
-        FSDK.FSDK_FaceTemplate faceTemplateFromImageStream = getFaceTemplateFromRawData(imageData);
+        //HImage es la estructura de datos para imagenes con la que trabaja FaceSDK
+        FSDK.HImage image = imageHandler.convertBytesBufferToHImage(imageData);
+
+        FSDK.TFacePosition facePosition = detectFaceInHImage(image);
+
+        if (facePosition == null) {
+            return NO_FACE_IN_THE_IMAGE;
+        }
+
+        FSDK.FSDK_FaceTemplate faceTemplateFromImageStream = getFaceTemplate(image, facePosition);
+
+        if (faceTemplateFromImageStream == null) {
+            return NO_FACE_IN_THE_IMAGE;
+        }
 
         for (Face face : allFaces ) {
             FSDK.FSDK_FaceTemplate faceTemplateFromDB = new FSDK.FSDK_FaceTemplate();
@@ -94,34 +118,31 @@ public class MainController {
         allFaces = db.getFaces();
     }
 
-
-    private FSDK.FSDK_FaceTemplate getFaceTemplateFromRawData(byte[] imageData) {
-
-        //HImage es la estructura de datos para imagenes con la que trabaja FaceSDK
-        FSDK.HImage image;
-        image = imageHandler.convertBytesBufferToHImage(imageData);
-
-        FSDK.FSDK_FaceTemplate faceTemplate = new FSDK.FSDK_FaceTemplate();
+    private FSDK.TFacePosition detectFaceInHImage(FSDK.HImage image) {
 
         //Funcion que regula que la sensibilidad de la detección
         FSDK.SetFaceDetectionThreshold(4); //menor 1; mayor 5; 1-5;
-
         //20x20px es el tamaño minimo del face en la imagen para que el sdk lo detecte
         int internalResizeWidth = 512; //dimensionar la imagen a:
         FSDK.SetFaceDetectionParameters(true, false, internalResizeWidth);
-
-
         FSDK.TFacePosition facePosition = new FSDK.TFacePosition();
         int detectResponse = FSDK.DetectFace(image, facePosition);
 
         //handle response
         if (detectResponse == FSDK.FSDKE_OK) {
-
             System.out.println("detect Face response_GetTemplateFromHImage: " + detectResponse);
+            return facePosition;
+        }
+        return null;
+    }
 
+    private FSDK.FSDK_FaceTemplate getFaceTemplate(FSDK.HImage image, FSDK.TFacePosition facePosition) {
+
+        FSDK.FSDK_FaceTemplate faceTemplate = new FSDK.FSDK_FaceTemplate();
+        //handle response
+        if (facePosition != null) {
             //get template from the face already located
             int getTemplateResponse = FSDK.GetFaceTemplateInRegion(image, facePosition, faceTemplate);
-
             System.out.println("get Template Response_GetTemplateFromHImage: " + getTemplateResponse);
             if (getTemplateResponse == FSDK.FSDKE_OK) {
                 return faceTemplate;

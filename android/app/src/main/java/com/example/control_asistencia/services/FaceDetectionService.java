@@ -2,9 +2,10 @@ package com.example.control_asistencia.services;
 
 import android.app.IntentService;
 import android.content.Intent;
-import com.luxand.FSDK;
 
 import androidx.annotation.Nullable;
+
+import com.luxand.FSDK;
 
 public class FaceDetectionService extends IntentService {
 

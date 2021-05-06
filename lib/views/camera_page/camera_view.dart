@@ -21,6 +21,8 @@ class CameraState extends State<Camera> {
   Future<void> initializeControllerFuture;
   List<CameraDescription> cameras;
   int selectedCameraIndex;
+  bool isOpen;
+  bool isDetecting = false;
 
 
 
@@ -49,17 +51,21 @@ class CameraState extends State<Camera> {
       int res = await MethodChannelService.channel.onInit();
       debugPrint("CODIGO DE RESPUESTA POR PARTE DE LA PLATAFORMA CON METHOD CHANNEL ON INIT:" + res.toString());
       initializeControllerFuture = controller.initialize();
-      initializeControllerFuture.whenComplete(() => streaming());
+      initializeControllerFuture.whenComplete(() => streaming() );
     } catch(e) {
       String error = 'Error ${e.code} \nError message: ${e.description}';
+      debugPrint(error);
     }
     if (mounted) {
-      setState(() { });
+      setState(() { isOpen = true; });
     }
   }
 
 
   Widget cameraPreview(){
+    if (!isOpen) {
+      initCamera(cameras[selectedCameraIndex]).then((value) { });
+    }
     return FutureBuilder<void>(
       future: initializeControllerFuture,
       builder: (context, snapshot) {
@@ -78,6 +84,12 @@ class CameraState extends State<Camera> {
   void streaming(){
     controller.startImageStream((image) => {
       //debugPrint("streaming + image planes:" + image.planes.length.toString())
+      //TODO para cada imagen, detectar si hay un rostro
+
+      //TODO para cada imagen con rostro, buscar el match
+
+      //TODO enrollment service
+
     });
   }
 
@@ -85,7 +97,7 @@ class CameraState extends State<Camera> {
   @override
   void initState() {
     super.initState();
-    //comporbamos las camaras que hay en el equipo
+    //comprobamos las camaras que hay en el equipo
     availableCameras().then((value) {
       cameras = value;
       if(cameras.length > 0){
@@ -117,8 +129,10 @@ class CameraState extends State<Camera> {
   Future<void> dispose() async{
     // Dispose of the controller when the widget is disposed.
     Future.delayed(Duration.zero, () async {
-      //await controller.stopImageStream();
+      //comentar esta linea de abajo si no funca
+      await controller.stopImageStream();
       await controller.dispose();
+      isOpen = false;
     });
     super.dispose();
   }

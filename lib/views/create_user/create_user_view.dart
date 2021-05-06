@@ -98,18 +98,47 @@ class CreateUserFormState extends State<CreateUserForm> {
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   //cuando acabe el metodo Future
+                  showResult(context);
                   _formKey.currentState.reset();
                   ImageHandlerWidgetState.images = [];
-                  return SnackBar(content: Text(userController.currentState));
+                  return  SnackBar( content: Text(userController.currentState));
                 } else {
                   //mientras el metodo future está en proceso
-                  return SnackBar( content: Text(userController.currentState));
+                  return Center(child: CircularProgressIndicator());
                 }
               },
             );
           }
         },
         child: Text('Guardar'));
+  }
+
+  Future<Widget> showResult(BuildContext context){
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Create User"),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text("El resultado del proceso es: "),
+                Text(userController.currentState)
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text("Dale"),
+              onPressed: () {
+                setState(() {  });
+                Navigator.of(context).pop();
+              },
+            )
+          ],
+        );
+      }
+    );
   }
 
 
@@ -145,10 +174,6 @@ class CreateUserFormState extends State<CreateUserForm> {
       return "Solo se aceptan numeros en este campo";
     }
     return null;
-  }
-
-  void deleteAll() {
-
   }
 
 }

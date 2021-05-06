@@ -1,5 +1,5 @@
 package com.example.control_asistencia.services;
-import com.example.control_asistencia.models.FImage;
+
 import com.luxand.FSDK;
 
 
