@@ -15,4 +15,5 @@ public class FImage {
     public void setTemplate(byte[] template) {
         this.template = template;
     }
+    
 }

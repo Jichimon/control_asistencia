@@ -26,7 +26,7 @@ class UserController {
 
     if (res != 0) { //si se crea correctamente res = id del usuario creado
       //enviando la info del user al SDK
-      await MethodChannelService.channel.sendUserArgumentsToNativeSDK(res, nameFromForm, imagesFromForm);
+      await MethodChannelService.channel.sendUserArgumentsToNativeSDK(res, imagesFromForm);
       this.currentState = UserController.STATE_CREATED_SUCCESFUL;
     } else {
       this.currentState = UserController.STATE_CREATION_FAILED;

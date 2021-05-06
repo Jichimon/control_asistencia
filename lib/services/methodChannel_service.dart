@@ -19,20 +19,18 @@ class MethodChannelService {
     }
   }
 
-  Future<String> getIdentifyResponseFromNativeSDK() async {
+  Future<int> onInit() async {
     try {
-      String response = "0000";
-      response = await platform.invokeMethod('getIdentifyResponse');
+      int response = await platform.invokeMethod('onInit');
       return response;
     } on PlatformException catch(e) {
       throw 'Unable to receive a response';
     }
   }
 
-  Future<void> sendUserArgumentsToNativeSDK(int userId, String userName, List<Uint8List> images) async {
+  Future<void> sendUserArgumentsToNativeSDK(int userId, List<Uint8List> images) async {
     try{
       return platform.invokeMethod('setNewUser', <String, dynamic>{   'userId': userId,
-                                                                    'userName': userName,
                                                                       'images': images,
       });
     } on PlatformException catch(e) {

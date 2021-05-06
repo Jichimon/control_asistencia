@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:control_asistencia/services/methodChannel_service.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
@@ -45,6 +46,8 @@ class CameraState extends State<Camera> {
     }
 
     try {
+      int res = await MethodChannelService.channel.onInit();
+      debugPrint("CODIGO DE RESPUESTA POR PARTE DE LA PLATAFORMA CON METHOD CHANNEL ON INIT:" + res.toString());
       initializeControllerFuture = controller.initialize();
       initializeControllerFuture.whenComplete(() => streaming());
     } catch(e) {
