@@ -2,9 +2,6 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
-import 'package:image/image.dart';
-
 import 'package:camera/camera.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -19,12 +16,14 @@ class ImageHandler {
 
   Future<Uint8List> getImage(bool fromGallery) async {
     PickedFile pickedFile;
+    double maxHeight = 480;
+    double maxWidth = 720;
     if (fromGallery) {
-      pickedFile = await imagePicker.getImage(source: ImageSource.gallery);
+      pickedFile = await imagePicker.getImage(source: ImageSource.gallery, maxHeight: maxHeight, maxWidth: maxWidth);
     }
     //si no es con la galeria, es con la camara
     else {
-      pickedFile = await imagePicker.getImage(source: ImageSource.camera, preferredCameraDevice: CameraDevice.front);
+      pickedFile = await imagePicker.getImage(source: ImageSource.camera, preferredCameraDevice: CameraDevice.front, maxHeight: maxHeight, maxWidth: maxWidth);
     }
 
     return await pickedFile.readAsBytes();

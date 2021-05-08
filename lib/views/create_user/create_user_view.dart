@@ -33,24 +33,21 @@ class CreateUserFormState extends State<CreateUserForm> {
               }),
         ),
         body: Center(
-          child:
-            Form(
-                key: _formKey,
-                child: Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        nameInput(),
-                        phoneNumberInput(),
-                        imagesInput(),
-                        Padding(
-                          padding: const
-                          EdgeInsets.symmetric(vertical: 16.0),
-                          child: createUserButton(),
-                    ),
-                  ],
-                )
-            )
+          child: Form(
+             key: _formKey,
+             child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                    Expanded(child: nameInput()),
+                    Expanded(child: phoneNumberInput()),
+                    Expanded(child: imagesInput()),
+                    Padding(
+                         padding: const
+                         EdgeInsets.symmetric(vertical: 16.0),
+                         child: createUserButton(),
+                   ),
+                ],
+             )
           )
         )
     );
@@ -86,32 +83,29 @@ class CreateUserFormState extends State<CreateUserForm> {
 
   Widget createUserButton() {
     return ElevatedButton(
-        onPressed: () {
+        onPressed: () async{
           //si el form es válido, devolverá true
           if (_formKey.currentState.validate()) {
             //aca llamamos al userController para meter el nuevo usuario a la base de datos
             userController.currentState = UserController.STATE_IN_PROCESS;
             ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar( content: Text(userController.currentState),));
-            return FutureBuilder<void>(
-              future: userController.createNewUser(nameCtrl.text, phoneNumberCtrl.text, ImageHandlerWidgetState.images),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  //cuando acabe el metodo Future
-                  showResult(context);
-                  _formKey.currentState.reset();
-                  ImageHandlerWidgetState.images = [];
-                  return  SnackBar( content: Text(userController.currentState));
-                } else {
-                  //mientras el metodo future está en proceso
-                  return Center(child: CircularProgressIndicator());
-                }
-              },
-            );
+                .showSnackBar(
+                SnackBar(content: Text(userController.currentState)));
+
+            await userController.createNewUser(nameCtrl.text, phoneNumberCtrl.text, ImageHandlerWidgetState.images)
+                .whenComplete(() =>
+            {
+              setState(() {
+                showResult(context);
+                _formKey.currentState.reset();
+                ImageHandlerWidgetState.images = [];
+              })
+            });
           }
         },
         child: Text('Guardar'));
   }
+
 
   Future<Widget> showResult(BuildContext context){
     return showDialog(
@@ -131,7 +125,6 @@ class CreateUserFormState extends State<CreateUserForm> {
             TextButton(
               child: Text("Dale"),
               onPressed: () {
-                setState(() {  });
                 Navigator.of(context).pop();
               },
             )
@@ -140,6 +133,8 @@ class CreateUserFormState extends State<CreateUserForm> {
       }
     );
   }
+
+
 
 
 

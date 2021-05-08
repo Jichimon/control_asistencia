@@ -71,7 +71,7 @@ public class DatabaseConnectionService extends SQLiteOpenHelper {
             c.moveToFirst();
             do {
                 int userId = c.getInt(c.getColumnIndex("userId"));
-                byte[] template = c.getBlob(c.getColumnIndex("id"));
+                byte[] template = c.getBlob(c.getColumnIndex("template"));
                 Face face = new Face(userId, template);
                 list.add(face);
             } while (c.moveToNext());

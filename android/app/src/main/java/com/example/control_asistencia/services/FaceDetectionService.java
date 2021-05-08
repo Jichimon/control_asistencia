@@ -6,12 +6,12 @@ import android.content.Intent;
 import androidx.annotation.Nullable;
 
 import com.luxand.FSDK;
-
+/*
 public class FaceDetectionService extends IntentService {
 
     /*
     TODO: para optimizar la aplicación proximamente se desarrollará usando hilos de ejecución distintos para cada operacion atomica
-     */
+     ///
 
     public FaceDetectionService() {
         super("FaceDetectionService");
@@ -23,3 +23,4 @@ public class FaceDetectionService extends IntentService {
 
     }
 }
+*/

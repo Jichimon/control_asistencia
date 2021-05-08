@@ -24,9 +24,9 @@ public class MethodCallHandlerService implements MethodCallHandler {
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         int response;
         switch (call.method) {
-            case "setImagesToIdentify":
+            case "setImageToIdentify":
                 byte[] imageData = call.arguments();
-                response = controller.setImagesToIdentify(imageData);
+                response = controller.setImageToIdentify(imageData);
                 //devuelve el id del usuario correctamente enrolado
                 result.success(response);
                 break;

@@ -1,6 +1,6 @@
 
 class Marcaje {
-  final int id;
+  int id;
   final DateTime date;
   final int userId;
 

@@ -23,12 +23,30 @@ class _HomePageState extends State<HomePage> {
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Access Control'),
+          actions: [
+
+          ],
         ),
         body: Camera(),
         drawer: menuDrawer(),
-        onDrawerChanged: (value){ CameraState.isStreamming = value; },
 
       ),
+    );
+  }
+
+  Widget changeCameraState() {
+    return IconButton(
+        icon: Icon(Icons.videocam_off),
+        onPressed: () {
+          if (CameraState.isStreamming) {
+            CameraState.isStreamming = false;
+            setState(() {
+
+            });
+          } else  {
+
+          }
+        }
     );
   }
 

@@ -13,28 +13,32 @@ class MethodChannelService {
 
   Future<int> sendImageToNativeSDK(Uint8List image) async {
     try {
-      return platform.invokeMethod('setImageToIdentify', [image]);
+      return await platform.invokeMethod('setImageToIdentify', image);
+
+      // -10 si no detectó un rostro en la imagen
+      // -1 si no existe un match con un template de la DB
+
     } on PlatformException catch (e) {
-      throw 'Unable to analyze the images sent';
+      throw e.toString();
     }
   }
 
   Future<int> onInit() async {
     try {
-      int response = await platform.invokeMethod('onInit');
+      Future<int> response = platform.invokeMethod('onInit');
       return response;
     } on PlatformException catch(e) {
-      throw 'Unable to receive a response';
+      throw e.toString();
     }
   }
 
-  Future<void> sendUserArgumentsToNativeSDK(int userId, List<Uint8List> images) async {
+  Future<int> sendUserArgumentsToNativeSDK(int userId, List<Uint8List> images) async {
     try{
       return platform.invokeMethod('setNewUser', <String, dynamic>{   'userId': userId,
                                                                       'images': images,
       });
     } on PlatformException catch(e) {
-      throw 'Unable to reach new User data';
+      throw e.toString();
     }
   }
 }

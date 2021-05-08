@@ -54,8 +54,8 @@ class DBProvider {
   }
 
   FutureOr<void> onCreate(Database db, int version) async{
-    String createTables = createTable_User + "\n" + createTable_Marcaje;
-    return db.execute(createTables);
+    db.execute(createTable_User);
+    return db.execute(createTable_Marcaje);
   }
 
   //_______CRUD Methods______________________
@@ -99,9 +99,9 @@ class DBProvider {
   }
 
   //marcaje
-  Future<void> insertMarcaje(Marcaje newMarcaje) async{
+  Future<int> insertMarcaje(Marcaje newMarcaje) async{
     final Database db = await database;
-    var res = await db.insert(
+    int res = await db.insert(
         "marcaje",
         newMarcaje.toMap(),
         conflictAlgorithm: ConflictAlgorithm.ignore);
@@ -119,11 +119,27 @@ class DBProvider {
     return res.isEmpty ? null : Marcaje.fromMap(res.first);
   }
 
+  Future<List<Marcaje>> getUserMarcajesFromDay(int userId, DateTime thisDay) async{
+    final Database db = await database;
+    var res = await db.query(
+        "marcaje",
+        where: "userId = ?",
+        whereArgs: [userId]);
+    List<Marcaje> listFromDB = res.map((e) => Marcaje.fromMap(e)).toList();
+    List<Marcaje> listToSend = [];
+    listFromDB.forEach((element) {
+      if(element.date.day != thisDay.day) {
+        listToSend.add(element);
+      }
+    });
+    return listToSend;
+  }
+
   Future<List<Marcaje>> getAllMarcajes() async {
     final Database db = await database;
     var res = await db.query("marcaje");
     List<Marcaje> list =
-    //cada map que recibí lo convierto en User, y lo pongo en una lista
+    //cada map que recibí lo convierto en Maracje, y lo pongo en una lista
     res.isNotEmpty ? res.map((e) => Marcaje.fromMap(e)).toList() : [];
     return list;
   }
