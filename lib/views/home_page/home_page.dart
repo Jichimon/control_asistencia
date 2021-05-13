@@ -1,4 +1,5 @@
 import 'package:control_asistencia/views/create_user/create_user_view.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:control_asistencia/views/camera_page/camera_view.dart';
 
@@ -16,6 +17,8 @@ class _HomePageState extends State<HomePage> {
   /*
   Scaffold principal
    */
+  bool _cameraOn = true;
+
   @override
   Widget build(BuildContext context) {
 
@@ -24,29 +27,26 @@ class _HomePageState extends State<HomePage> {
         appBar: AppBar(
           title: const Text('Access Control'),
           actions: [
-
+            IconButton(
+                icon: _cameraOn ? Icon(Icons.videocam) : Icon(Icons.videocam_off),
+                onPressed: () {
+                  setState(() {
+                    _cameraOn = !_cameraOn;
+                  });
+                },
+            )
           ],
         ),
-        body: Camera(),
+        body: Column(
+          children: [
+            Expanded(
+              child: _cameraOn ? Camera() : Center(child: Text("Camera Off")),
+            ),
+          ],
+        ),
         drawer: menuDrawer(),
 
       ),
-    );
-  }
-
-  Widget changeCameraState() {
-    return IconButton(
-        icon: Icon(Icons.videocam_off),
-        onPressed: () {
-          if (CameraState.isStreamming) {
-            CameraState.isStreamming = false;
-            setState(() {
-
-            });
-          } else  {
-
-          }
-        }
     );
   }
 
@@ -91,13 +91,17 @@ class _HomePageState extends State<HomePage> {
   }
 
   void navigateTo(BuildContext context, Widget route) {
+    setState(() {
+      _cameraOn = false;
+    });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Navigator.push(
           context,
-          MaterialPageRoute( builder: (context) => route, )
+          MaterialPageRoute(
+              builder: (BuildContext context) => route
+          )
       );
     });
-
   }
 }
 

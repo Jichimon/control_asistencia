@@ -38,12 +38,11 @@ class CreateUserFormState extends State<CreateUserForm> {
              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                    Expanded(child: nameInput()),
-                    Expanded(child: phoneNumberInput()),
+                    nameInput(),
+                    phoneNumberInput(),
                     Expanded(child: imagesInput()),
                     Padding(
-                         padding: const
-                         EdgeInsets.symmetric(vertical: 16.0),
+                         padding: EdgeInsets.symmetric(vertical: 6.0),
                          child: createUserButton(),
                    ),
                 ],
@@ -83,7 +82,7 @@ class CreateUserFormState extends State<CreateUserForm> {
 
   Widget createUserButton() {
     return ElevatedButton(
-        onPressed: () async{
+        onPressed: () {
           //si el form es válido, devolverá true
           if (_formKey.currentState.validate()) {
             //aca llamamos al userController para meter el nuevo usuario a la base de datos
@@ -92,14 +91,14 @@ class CreateUserFormState extends State<CreateUserForm> {
                 .showSnackBar(
                 SnackBar(content: Text(userController.currentState)));
 
-            await userController.createNewUser(nameCtrl.text, phoneNumberCtrl.text, ImageHandlerWidgetState.images)
-                .whenComplete(() =>
-            {
-              setState(() {
-                showResult(context);
-                _formKey.currentState.reset();
-                ImageHandlerWidgetState.images = [];
-              })
+            userController.createNewUser(nameCtrl.text, phoneNumberCtrl.text, ImageHandlerWidgetState.images)
+                .then((value) => {
+                  setState(() {
+                    showResult(context);
+                    _formKey.currentState.reset();
+                    ImageHandlerWidgetState.images = [];
+                    imageHandlerWidget.createState();
+                  })
             });
           }
         },

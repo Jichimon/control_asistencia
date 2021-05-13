@@ -62,7 +62,7 @@ public class DatabaseConnectionService extends SQLiteOpenHelper {
     }
 
     public synchronized ArrayList<Face> getFaces() {
-        ArrayList<Face> list = new ArrayList<Face>();
+        ArrayList<Face> list = new ArrayList<>();
         if (db == null) {
             db = connection.getReadableDatabase();
         }
@@ -76,6 +76,7 @@ public class DatabaseConnectionService extends SQLiteOpenHelper {
                 list.add(face);
             } while (c.moveToNext());
         }
+        assert c != null;
         c.close();
         return list;
     }
@@ -86,15 +87,13 @@ public class DatabaseConnectionService extends SQLiteOpenHelper {
         }
     }
 
-    public void openReadable() {
-        if (db == null) {
-            db = connection.getReadableDatabase();
-        }
-    }
-
     @Override
     public synchronized void close() {
         db.close();
         super.close();
+    }
+
+    public void deleteAll(){
+        db.execSQL("DROP TABLE IF EXISTS UserFace");
     }
 }

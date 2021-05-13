@@ -13,27 +13,25 @@ class UserController {
 
   String currentState;
   MethodChannelService methodChannelService;
-  bool finishCreationProcess = false;
 
   Future<void> createNewUser(String nameFromForm, String phoneNumberFromForm, List<Uint8List> imagesFromForm) async{
 
     User newUser = new User(name: nameFromForm, phoneNumber: phoneNumberFromForm);
-
     //insertando el user a la base de datos de marcaje....
     int res = await DBProvider.db.insertUser(newUser);
 
     if (res != 0) { //si se crea correctamente res = id del usuario creado
       //enviando la info del user al SDK
-      int response = await MethodChannelService.channel.sendUserArgumentsToNativeSDK(res, imagesFromForm);
-      print(response);
-      this.currentState = UserController.STATE_CREATED_SUCCESSFUL;
+      int result = await MethodChannelService.channel.sendUserArgumentsToNativeSDK(res, imagesFromForm);
+      print(result);
+      if (result == 0) {
+        this.currentState = UserController.STATE_CREATED_SUCCESSFUL;
+      } else {
+        this.currentState = UserController.STATE_CREATION_FAILED;
+      }
     } else {
       this.currentState = UserController.STATE_CREATION_FAILED;
     }
-    finishCreationProcess = true;
   }
-
-
-
 
 }

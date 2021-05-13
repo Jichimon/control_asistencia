@@ -26,11 +26,17 @@ class ImageHandlerWidgetState extends State<ImageHandlerWidget> {
     return Column(
         children: <Widget>[
           Container(
-            height: 100,
+            height: 70,
             child: listaDeImagenes(),
           )
         ],
     );
+  }
+
+  @override
+  void dispose(){
+    images = [];
+    super.dispose();
   }
 
   Widget listaDeImagenes() {
@@ -55,9 +61,9 @@ class ImageHandlerWidgetState extends State<ImageHandlerWidget> {
   Widget showImage(Uint8List image) {
     return InkWell(
       child: Container(
-        margin: EdgeInsets.all(5),
-        height: 100,
-        width: 100,
+        margin: EdgeInsets.all(3),
+        height: 60,
+        width: 60,
         color: Colors.white24,
         child: Image.memory(image),
       ),
@@ -68,9 +74,9 @@ class ImageHandlerWidgetState extends State<ImageHandlerWidget> {
     return InkWell(
       onTap: () => showSelectionDialog(context),
       child: Container(
-        margin: EdgeInsets.all(5),
-        height: 100,
-        width: 100,
+        margin: EdgeInsets.all(2),
+        height: 60,
+        width: 60,
         color: Colors.black38,
         child: Center(
           child: Icon(

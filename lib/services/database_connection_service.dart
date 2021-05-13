@@ -55,7 +55,11 @@ class DBProvider {
 
   FutureOr<void> onCreate(Database db, int version) async{
     db.execute(createTable_User);
-    return db.execute(createTable_Marcaje);
+    db.execute(createTable_Marcaje);
+  }
+
+  FutureOr<void> deleteAll() async{
+    _database.delete("users");
   }
 
   //_______CRUD Methods______________________

@@ -4,9 +4,9 @@ package com.example.control_asistencia.services.channels;
 import androidx.annotation.NonNull;
 
 import com.example.control_asistencia.controllers.MainController;
+import com.example.control_asistencia.models.UserImages;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -17,7 +17,7 @@ public class MethodCallHandlerService implements MethodCallHandler {
     private final MainController controller;
 
     MethodCallHandlerService() {
-        controller = new MainController();
+        controller = MainController.getInstance();
     }
 
     @Override
@@ -35,12 +35,15 @@ public class MethodCallHandlerService implements MethodCallHandler {
                 ArrayList<byte[]> images = call.argument("images");
                 if ( call.argument("userId")!= null && images != null) {
                     int userId = call.argument("userId");
+                    UserImages userImages = new UserImages(userId, images);
                     System.out.println( "+++++ METHODCALLHANDLERSERVICE +++++++  " + userId + "  " + "images: " + images.size() );
-                    response = controller.setNewUser(userId, images);
+                    response = controller.setNewUser(userImages);
                     if (response == 0) {
                         result.success(response);
+                        break;
                     }
                     result.error("code: " + response, "no se creo el usuario correctamente", "");
+                    break;
                 }
                 result.error("No data sended", "empty arguments", "");
                 break;
